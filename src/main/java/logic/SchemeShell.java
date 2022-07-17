@@ -1,10 +1,18 @@
 package logic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SchemeShell implements Scheme{
-    List<InputOutput> inputs;
-    List<InputOutput> outputs;
+    List<InputOutput> inputs = new ArrayList<>();
+    List<InputOutput> outputs = new ArrayList<>();
+
+    public SchemeShell(int inputs, int outputs){
+        for(int i = 0; i < inputs; ++i)
+            createInput();
+        for(int i = 0; i < outputs; ++i)
+            createOutput();
+    }
 
     @Override
     public InputOutput createInput() {
@@ -41,7 +49,5 @@ public class SchemeShell implements Scheme{
     }
 
     @Override
-    public void inputFilled() {
-
-    }
+    public void inputFilled() {}
 }

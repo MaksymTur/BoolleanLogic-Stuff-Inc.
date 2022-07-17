@@ -1,3 +1,4 @@
+import logic.SchemeShell;
 import logic.SimpleInput;
 import logic.NAND;
 import logic.Scheme;
@@ -54,5 +55,55 @@ public class LogicTests {
                 {0, 1, 1},
                 {1, 0, 1},
                 {1, 1, 0}});
+    }
+
+    @Test
+    public void testShell(){
+        checkTruthTable(() -> {
+            SchemeShell shell = new SchemeShell(2, 1);
+            NAND nand = new NAND();
+            shell.getInput(0).connectInput(nand.getInput(0));
+            shell.getInput(1).connectInput(nand.getInput(1));
+            shell.getOutput(0).connectOutput(nand.getOutput(0));
+            return shell;
+        }, new Integer[][]{
+                {0, 0, 1},
+                {0, 1, 1},
+                {1, 0, 1},
+                {1, 1, 0}});
+    }
+
+    Supplier<Scheme> NOTSupplier = () -> {
+        SchemeShell shell = new SchemeShell(1, 1);
+        NAND nand = new NAND();
+        shell.getInput(0).connectInput(nand.getInput(0));
+        shell.getInput(0).connectInput(nand.getInput(1));
+        shell.getOutput(0).connectOutput(nand.getOutput(0));
+        return shell;
+    };
+
+    @Test
+    public void testNOT(){
+        checkTruthTable(NOTSupplier, new Integer[][]{
+                {0, 1},
+                {1, 0}});
+    }
+
+    @Test
+    public void testAND(){
+        checkTruthTable(() -> {
+            SchemeShell shell = new SchemeShell(2, 1);
+            Scheme nand = new NAND();
+            Scheme not = NOTSupplier.get();
+            shell.getInput(0).connectInput(nand.getInput(0));
+            shell.getInput(1).connectInput(nand.getInput(1));
+            not.getInput(0).connectOutput(nand.getOutput(0));
+            shell.getOutput(0).connectOutput(not.getOutput(0));
+            return shell;
+        }, new Integer[][]{
+                {0, 0, 0},
+                {0, 1, 0},
+                {1, 0, 0},
+                {1, 1, 1},});
     }
 }
